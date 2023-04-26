@@ -3,6 +3,8 @@
 
 import tkinter as tk
 import random
+import zipfile
+import io
 from tkinter import messagebox
 from timeit import default_timer as timer
 from datastructures.AVL import AVLTree, TreeNode
@@ -72,6 +74,23 @@ class ProjectGUI:
 
     def buttonPress(self):
 
+        dataset_words = []
+        dataset_numbers = []
+
+        with zipfile.ZipFile("Datasets.zip") as zf:  # open the zip file
+            with io.TextIOWrapper(zf.open("words_dataset.txt"),
+                                  encoding="utf-8") as f:  # open the file inside the zip file
+                for line in f:
+                    dataset_words.append(line.strip())  # strip the newline character and add to list
+                f.close()  # close the file
+
+        with zipfile.ZipFile("Datasets.zip") as zf:
+            with io.TextIOWrapper(zf.open("integers_dataset.txt"), encoding="utf-8") as f:
+                for line in f:
+                    dataset_numbers.append(int(line))
+                f.close()
+
+
         chosenDS = self.clickedDS.get()
         chosenOperation = self.clickedOperations.get()
         chosenNum = self.clickedNum.get()
@@ -90,68 +109,83 @@ class ProjectGUI:
             # CHOSEN STRUCTURE = AVL
             if chosenDS == "            AVL            ":
                 avl = AVLTree()
-                root = TreeNode(50)
+                root = TreeNode(dataset_numbers[0])
+
+                # Creating AVL
+                for i in dataset_numbers[1:]:
+                    avl.insert_node(root, i)
+
                 # OPERATION = SEARCH
                 if chosenOperation == "          Search           ":
                     start = timer()
                     for i in range(chosenNum):
-                        avl.search(root=root, key=50)
+                        avl.search(root=root, key=random.choice(dataset_numbers))
                     end = timer()
                 # OPERATION = INSERT
                 if chosenOperation == "          Insert           ":
                     start = timer()
                     for i in range(chosenNum):
-                        avl.insert_node(root, random.randint(0,100000))
+                        avl.insert_node(root, random.choice(dataset_numbers))
                     end = timer()
                 # OPERATION = DELETE
                 if chosenOperation == "          Delete           ":
                     start = timer()
                     for i in range(chosenNum):
-                        avl.delete_node(root, 50)
+                        avl.delete_node(root, random.choice(dataset_numbers))
                     end = timer()
 
             # CHOSEN STRUCTURE = BINARY SEARCH TREE
             elif chosenDS == "     Binary Search Tree    ":
-                bst = Node(50)
+                bst = Node(dataset_numbers[0])
+
+                # Creating BST
+                for i in dataset_numbers[1:]:
+                    bst.insert(i)
+
                 # OPERATION = SEARCH
                 if chosenOperation == "          Search           ":
                     start = timer()
                     for i in range(chosenNum):
-                        bst.find(random.randint(1, 100000))
+                        bst.find(random.choice(dataset_numbers))
                     end = timer()
                 # OPERATION = INSERT
                 if chosenOperation == "          Insert           ":
                     start = timer()
                     for i in range(chosenNum):
-                        bst.insert(random.randint(1, 100000))
+                        bst.insert(random.choice(dataset_numbers))
                     end = timer()
                 # OPERATION = DELETE
                 if chosenOperation == "          Delete           ":
                     start = timer()
                     for i in range(chosenNum):
-                        bst.delete(random.randint(1, 100000))
+                        bst.delete(random.choice(dataset_numbers))
                     end = timer()
 
             # CHOSEN STRUCTURE = SKIPLIST
             elif chosenDS == "          Skiplist         ":
                 skiplist = SkipList()
+
+                # Creating SkipList
+                for i in dataset_numbers:
+                    skiplist.insert(i)
+
                 # OPERATION = SEARCH
                 if chosenOperation == "          Search           ":
                     start = timer()
                     for i in range(chosenNum):
-                        skiplist.find(random.randint(1, 100000))
+                        skiplist.find(random.choice(dataset_numbers))
                     end = timer()
                 # OPERATION = SEARCH
                 if chosenOperation == "          Insert           ":
                     start = timer()
                     for i in range(chosenNum):
-                        skiplist.insert(random.randint(1, 100000))
+                        skiplist.insert(random.choice(dataset_numbers))
                     end = timer()
                 # OPERATION = SEARCH
                 if chosenOperation == "          Delete           ":
                     start = timer()
                     for i in range(chosenNum):
-                        skiplist.remove(random.randint(1, 100000))
+                        skiplist.remove(random.choice(dataset_numbers))
                     end = timer()
 
 
